@@ -1,0 +1,529 @@
+---
+title: "Análisis Mario Kart 8 Deluxe"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+```{r include=FALSE}
+library(tidyverse)
+library(dplyr, quietly = TRUE)
+library(RColorBrewer)
+library(rgl)
+```
+# 1. Datos de Personajes, Karts, Llantas y alas
+Primero se recoletó la información de las estadísticas de los personajes, karts,
+llantas y alas de Mario Kart 8, y estas se agruparon con aquellos que tuvieran
+los mismos valores en todas sus estadísticas
+```{r echo=FALSE}
+personajes<- read.csv("personajes.csv",encoding = "UTF-8")
+karts<- read.csv("karts.csv",encoding = "UTF-8")
+llantas<- read.csv("llantas.csv",encoding = "UTF-8")
+alas<- read.csv("alas.csv",encoding = "UTF-8")
+columnasN<- c("T.Dentro","T.Fuera","Miniturbo","V.Tierra","V.Agua",
+              "V.Antigravedad","V.Aire","M.Tierra","M.Agua","M.Antigravedad","M.Aire")
+```
+
+## Personajes
+```{r echo=FALSE}
+colnames(personajes)[1]<- "Clase"
+personajes
+colnames(personajes)[5:15]<-columnasN
+```
+
+## Karts
+```{r echo=FALSE}
+colnames(karts)[1]<- "Clase"
+karts
+colnames(karts)[5:15]<-columnasN
+```
+
+## Llantas
+```{r echo=FALSE}
+colnames(llantas)[1]<- "Clase"
+llantas
+colnames(llantas)[5:15]<-columnasN
+```
+
+## Alas
+```{r echo=FALSE}
+colnames(alas)[1]<- "Clase"
+alas
+colnames(alas)[5:15]<-columnasN
+```
+
+# 2.Análisis de estadísticas
+Aunque la pantalla de juego sólo muestra 5 estadísticas, internamente se tienen 13
+estadísticas que influyen en el movimiento del personaje:
+
+- Peso: Entre mayor sea el peso, el personaje se moverá una menor distancia cuando
+este es empujado por otro personaje
+- Aceleración: Entre mayor sea la aceleración, menos tiempo tomará el jugador en
+alcanzar su velocidad máxima
+- Tracción: Entre mayor sea la tracción, el jugador sufrirá una menor desaceleración 
+al momento de salirse de la pista
+- Miniturbo: Entre mayor sea el miniturbo, el jugador tomará menos tiempo en cargar
+su miniturbo al derrapar y el efecto del miniturbo será más largo
+- Velocidad: Entre mayor sea la velocidad, mayor será la velocidad máxima del jugador. 
+Esta estadística se divide en 4: Tierra, Agua, Aire y Antigravedad, que se refieren a 
+los 4 entornos que se encuentran en el juego, por lo que tiene una difernete velocidad 
+máxima en cada entorno
+- Manejo: Entre mayor sea el manejo, el jugador podrá maniobrar más cuando derrapa. 
+Esta estadística, al igual que la velocidad, se divide en 4 para cada entorno del juego
+
+## 2.1 Estadísticas de Personajes
+Las estadísticas de los personajes tienen ciertas tendencias, como se observa en
+el gráfico siguiente, donde a grandes rasgos, el peso, la tracción dentro de la pista
+y la velocidad están directamente relacionadas entre sí, mientras que la aceleración,
+la tracción fuera de la pista, el miniturbo y el manejo están directamente relacionados 
+entre sí, y estos 2 grupos de estadísticas están inversamente relacionados entre sí. 
+(Entre más oscuro el color, mayor nivel)
+
+
+```{r echo=FALSE}
+personajesm<- personajes[,3:15]
+row.names(personajesm)<- personajes$Clase
+coul <- colorRampPalette(brewer.pal(8, "Blues"))(25)
+heatmap(as.matrix(personajesm),scale="column",col=coul,main=="Estadísticas de personajes", Rowv=NA, Colv = NA, margins = c(8,0))
+```
+
+
+## 2.2 Estadísticas de Karts
+Las estadísticas de los karts se muestran en el siguiente gráfico, aunque estos no 
+muestran una relación significativa entre ellos. (Entre más oscuro el color, mayor nivel)
+
+```{r echo=FALSE}
+kartsm<- karts[,3:15]
+row.names(kartsm)<- karts$Clase
+coul <- colorRampPalette(brewer.pal(8, "Blues"))(25)
+heatmap(as.matrix(kartsm),scale="column",col=coul,main=="Estadísticas de karts",
+        Rowv=NA, Colv = NA, margins = c(8,0))
+```
+
+
+## 2.2 Estadísticas de Llantas
+Las estadísticas de las llantas se muestran en el siguiente gráfico. Se muestra que 
+a grandes rasgos, el peso está directamente relacionado con la tracción y la velocidad 
+en tierra, mientras que la aceleración y el miniturbo están directamente relacionados
+entre sí, e inversamente relacionados con los anteriores. (Entre más oscuro el color, 
+mayor nivel)
+
+```{r echo=FALSE}
+llantasm<- llantas[,3:15]
+row.names(llantasm)<- llantas$Clase
+coul <- colorRampPalette(brewer.pal(8, "Blues"))(25)
+heatmap(as.matrix(llantasm),scale="column",col=coul,main=="Estadísticas de llantas",
+        Rowv=NA, Colv = NA, margins = c(8,0))
+```
+
+
+## 2.3 Estadísticas de Alas
+Las estadísticas de las llantas se muestran en el siguiente gráfico. No hay una relación 
+significativa en sus estadísticas, aunque se puede ver que las alas no influye en las 
+estadísticas relacionadas al manejo en tierra. (Entre más oscuro el color, mayor nivel)
+
+```{r echo=FALSE}
+alasm<- alas[,3:15]
+row.names(alasm)<- alas$Clase
+coul <- colorRampPalette(brewer.pal(8, "Blues"))(25)
+heatmap(as.matrix(alasm),scale="column",col=coul,main=="Estadísticas de alas",
+        Rowv=NA, Colv = NA, margins = c(8,0))
+```
+
+
+## 2.4 Estadísticas de Combinación
+Con base en la agrupación de estadísticas, hay 16 personajes, 14 karts, 9 llantas, 
+4 alas. Por lo tanto, hay 8064 (16 x 14 x 9 x 4) combinaciones distintas. El nivel 
+total de una combinación es la suma de las estadísticas de cada componente.
+
+```{r echo=FALSE}
+combinaciones<- data.frame("Clase Personajes" = character(),
+                           "Personajes"= character(),
+                           "Clase Karts" = character(),
+                           "Karts" = character(),
+                           "Clase Llantas"= character(),
+                           "Llantas"= character(),
+                           "Clase Alas"= character(),
+                           "Alas"= character(),
+                           "Peso"=numeric(),
+                           "Aceleración"= numeric(),
+                           "Tracción Pista"= numeric(),
+                           "Tracción Fuera"=numeric(),
+                           "Miniturbo"=numeric(),
+                           "Velocidad Tierra"=numeric(),
+                           "Velocidad Agua"=numeric(),
+                           "Velocidad Antigravedad"=numeric(),
+                           "Velocidad Aire"=numeric(),
+                           "Manejo Tierra"=numeric(),
+                           "Manejo Agua"=numeric(),
+                           "Manejo Antigravedad"=numeric(),
+                           "Manejo Aire"=numeric())
+for(i in 1:dim(personajes)[1]){
+  for (j in 1:dim(karts)[1]){
+    for (k in 1:dim(llantas)[1]){
+      for (l in 1:dim(alas)[1]){
+        valores<- personajes[i,3:15]+karts[j,3:15]+llantas[k,3:15]+alas[l,3:15]
+        combinacion<- data.frame("Clase Personajes" = personajes[i,1],
+                                 "Personajes"= personajes[i,2],
+                                 "Clase Karts" = karts[j,1],
+                                 "Karts" = karts[j,2],
+                                 "Clase Llantas"= llantas[k,1],
+                                 "Llantas"= llantas[k,2],
+                                 "Clase Alas"= alas[l,1],
+                                 "Alas"= alas[l,2],
+                                 "Peso"=valores[1,1],
+                                 "Aceleración"= valores[1,2],
+                                 "Tracción Pista"= valores[1,3],
+                                 "Tracción Fuera"=valores[1,4],
+                                 "Miniturbo"=valores[1,5],
+                                 "Velocidad Tierra"=valores[1,6],
+                                 "Velocidad Agua"=valores[1,7],
+                                 "Velocidad Antigravedad"=valores[1,8],
+                                 "Velocidad Aire"=valores[1,9],
+                                 "Manejo Tierra"=valores[1,10],
+                                 "Manejo Agua"=valores[1,11],
+                                 "Manejo Antigravedad"=valores[1,12],
+                                 "Manejo Aire"=valores[1,13])
+        combinaciones<- rbind(combinaciones,combinacion)
+        
+      }
+    }
+  }
+}
+combinaciones
+combinaciones[,2]<-sub(";",", ", combinaciones[,2])
+```
+
+Sin embargo, en el juego, no se muestra el nivel tal cual, sino que se hace la conversión 
+usando la siguiente tabla:
+
+```{r echo=FALSE}
+niveles<- read.csv("niveles.csv",encoding = "UTF-8")
+colnames(niveles)[1]<- "Nivel"
+niveles
+```
+
+Por lo tanto, las estadísticas finales de las combinaciones quedan de la siguiente forma:
+
+```{r echo=FALSE}
+combinaciones[,9:21]<- combinaciones[,9:21]*.25+.75 
+combinaciones
+```
+
+# 3. Análisis Combinaciones
+De manera general, se puede observar la distribución del promedio de puntos de las 
+estadísticas de todas las combinaciones a través delsiguiente gráfico
+
+```{r echo=FALSE}
+combinaciones$promedio<- apply(combinaciones[,c(9:21)],1,mean,na.rm=TRUE)
+coul <- colorRampPalette(brewer.pal(8, "Blues"))(11)
+hist(x= combinaciones$promedio, main= "Promedio de puntos de las combinaciones",
+     xlab="Promedio de puntos", ylab= "Frecuencia", xlim=c(2.8,4), col= coul)
+```
+
+
+Hay 46 combinaciones con un promedio mayor a 3.8, las cuales son:
+```{r echo=FALSE}
+combinaciones[combinaciones$promedio>= 3.8,]
+```
+
+Aunque, dependiendo de las habilidades y experiencia de cada jugador, cada uno 
+podría optar por una combinación que tenga o no ciertos atributos
+
+# 3.1 Sin peso
+
+En Mario Kart no son muy comunes los choques entre carros sin los objetos, por lo 
+que algunos jugadores podrían prescindir de esta característica, obteniendo estas 
+combinaciones
+
+```{r echo=FALSE}
+combinaciones$promedio<- apply(combinaciones[,c(10:21)],1,mean,na.rm=TRUE)
+coul <- colorRampPalette(brewer.pal(8, "Blues"))(12)
+hist(x= combinaciones$promedio, main= "Promedio de puntos sin peso de las combinaciones",
+     xlab="Promedio de puntos", ylab= "Frecuencia", xlim=c(2.6,4), col= coul)
+```
+
+Sin tomar en cuenta el peso, hay 80 combinaciones con un promedio mayor a 3.8, 
+las cuales son:
+```{r echo=FALSE}
+combinaciones[combinaciones$promedio>= 3.8,]
+```
+
+# 3.2 Sin Tracción
+
+Para algunos jugadores con más habilidad, no suelen salirse de la pista, por lo que 
+no necesitan un nivel de tracción alto, obteniendo así las siguientes combinaciones:
+
+```{r echo=FALSE}
+combinaciones$promedio<- apply(combinaciones[,c(10,13:21)],1,mean,na.rm=TRUE)
+coul <- colorRampPalette(brewer.pal(8, "Blues"))(14)
+hist(x= combinaciones$promedio, main= "Promedio de puntos sin peso y tracción de
+     las combinaciones",xlab="Promedio de puntos", ylab= "Frecuencia", col= coul)
+```
+
+Sin tomar en cuenta el peso y la tracción, hay 79 combinaciones con un promedio 
+mayor a 3.9, las cuales son:
+```{r echo=FALSE}
+combinaciones[combinaciones$promedio>= 3.9,]
+```
+
+
+# 3.3 Sin Manejo
+
+Para algunos jugadores, el manejo es indistinto, pues se pueden adaptar a cómo derrapar
+con cualquier combinación, obteniendo así las siguientes combinaciones:
+
+```{r echo=FALSE}
+combinaciones$promedio<- apply(combinaciones[,c(10,13:17)],1,mean,na.rm=TRUE)
+coul <- colorRampPalette(brewer.pal(8, "Blues"))(11)
+hist(x= combinaciones$promedio, main= "Promedio de puntos sin peso, tracción y manejo 
+     de las combinaciones",xlab="Promedio de puntos", xlim= c(2,4.5),
+     ylab= "Frecuencia", col= coul)
+```
+
+Sin tomar en cuenta el peso, la tracción y el manejor, hay 16 combinaciones con 
+un promedio mayor a 4.3, las cuales son:
+```{r echo=FALSE}
+combinaciones[combinaciones$promedio>= 4.3,]
+```
+
+
+# 3.4 Velocidad, Aceleración y Miniturbo
+
+Por lo tanto, al final se tienen 3 estadísticas principales, la velocidad, la aceleración 
+y el miniturbo. El promedio de estos se obsevó en el gráfico anterior. Sin embargo, 
+a partir de este punto, los jugadores podrían preferir una combinación que tuviera mayor 
+velocidad que aceleración, mayor aceleración que velocidad, o alguna que los tenga lo 
+más equilibrado posible, por lo que se podrían tener unas combinaciones más enfocadas 
+a ciertas estadísticas que otras
+
+## Aceleración y miniturbo
+En el siguiente diagrama se observa el puntaje de aceleración y miniturbo de todas 
+las combinaciones
+
+```{r echo=FALSE}
+plot(combinaciones$Aceleración, combinaciones$Miniturbo, pch=18, cex= 2, col= "#6495ED",
+     main="Aceleración y Miniturbo", xlab="Aceleración", ylab="Miniturbo")
+```
+
+## Velocidades 
+En los siguientes diagramas se observa cómo se relacionan las velocidades
+```{r echo=FALSE}
+plot(combinaciones$Velocidad.Tierra, combinaciones$Velocidad.Agua, pch=18, cex= 2, col= 
+       "#6495ED", main="Velocidad en Tierra y Agua", xlab="Tierra ", ylab="Agua")
+plot(combinaciones$Velocidad.Tierra, combinaciones$Velocidad.Aire, pch=18, cex= 2, col= 
+       "#6495ED",main="Velocidad en Tierra y Aire", xlab="Tierra", ylab="Aire")
+plot(combinaciones$Velocidad.Tierra, combinaciones$Velocidad.Antigravedad, pch=18, cex= 2, 
+     col= "#6495ED", main="Velocidad en Tierra y Antigravedad", xlab="Tierra", 
+     ylab="Antigravedad")
+```
+
+
+## Velocidad y Miniturbo
+En el siguiente diagrama se observa el puntaje de velocidad en tierra y miniturbo
+de todas las combinaciones
+
+```{r echo=FALSE}
+plot(combinaciones$Velocidad.Tierra, combinaciones$Miniturbo, pch=18, cex= 2, col= "#6495ED",
+     main="Velocidad en Tierra y Miniturbo", xlab="Velocidad", ylab="Miniturbo")
+plot(combinaciones$Velocidad.Agua, combinaciones$Miniturbo, pch=18, cex= 2, col= "#6495ED",
+     main="Velocidad en Agua y Miniturbo", xlab="Velocidad", ylab="Miniturbo")
+plot(combinaciones$Velocidad.Aire, combinaciones$Miniturbo, pch=18, cex= 2, col= "#6495ED",
+     main="Velocidad en Aire y Miniturbo", xlab="Velocidad", ylab="Miniturbo")
+plot(combinaciones$Velocidad.Antigravedad, combinaciones$Miniturbo, pch=18, cex= 2, 
+     col= "#6495ED",main="Velocidad en Antigravedad y Miniturbo", xlab="Velocidad",
+     ylab="Miniturbo")
+```
+
+
+## Aceleración y velocidad
+En el siguiente diagrama se observa el puntaje de aceleración y velocidad en tierra 
+de todas las combinaciones
+
+```{r echo=FALSE}
+plot(combinaciones$Aceleración, combinaciones$Velocidad.Tierra, pch=18, cex= 2, col="#6495ED",
+     main="Aceleración y Velocidad Tierra", xlab="Aceleración", ylab="Velocidad")
+plot(combinaciones$Aceleración, combinaciones$Velocidad.Agua, pch=18, cex= 2, col="#6495ED",
+     main="Aceleración y Velocidad Agua", xlab="Aceleración", ylab="Velocidad")
+plot(combinaciones$Aceleración, combinaciones$Velocidad.Aire, pch=18, cex= 2, col="#6495ED",
+     main="Aceleración y Velocidad Aire", xlab="Aceleración", ylab="Velocidad")
+plot(combinaciones$Aceleración, combinaciones$Velocidad.Antigravedad, pch=18, cex= 2, 
+     col="#6495ED",main="Aceleración y Velocidad Antigravedad", xlab="Aceleración", 
+     ylab="Velocidad")
+```
+
+
+# 4. Mejores Combinaciones
+
+A partir de los mencionado anteriormente, se pueden tener 3 diferentes tipos de 
+combinaciones óptimas:
+
+- Aceleración y Miniturbo: Las combinaciones donde se priorizan estas carcaterísticas 
+sirven cuando hay muchas oportunidades de hacer miniturbos (rampas, derrapes), cuando 
+es muy alta la velocidad de la carrera (200 cc) acortando el tiempo entre cada curva, 
+o cuando el jugador es golpeado muchas veces, por lo que debe alcanzar su veocidad 
+máxima rápidamente
+- Velocidad: Las combinaciones donde se prioriza esta estadística sirve mucho cuando 
+hay pocas oportunidades para hacer miniturbos (rampas, derrapes), cuando es poca la velocidad
+de la carrera (50 cc) donde el tiempo entre cada curva es más largo o cuando el jugador no 
+es golpeado o no se cae, por lo que no tiene que acelerar para volver a alcanzar su 
+velocidad máxima.
+- Neutro: Las combinaciones donde se busca un balance entre velocidad, miniturbo 
+y aceleración, sirve mucho cuando hay una cantidad media de rampas o derrapes, cuando 
+la velocidad de la carrera es media (100 cc o 150 cc) o cuando se tiene una combinación 
+de golpes y áreas donde no es golpeado el jugador
+
+Usando un algoritmo KNN se puede buscar las mejores combinaciones que cumplan con 
+cierto nivel en todas las estadístcas de cada combinación y encontrar el más cercano 
+a esta carcaterística.
+
+## 4.1 Aceleración y Miniturbo
+
+Para una combinación donde se priorizen estas estadísticas, se puede tomar en cuenta:
+
+- Aceleración: 5.75
+- Miniturbo: 5.75
+- Velocidad Tierra: 1.5
+- Velocidad Agua: 2.0
+- Velocidad Aire: 3.0 
+- Velocidad Antigravedad: 2.0
+
+```{r echo=FALSE}
+combinacionesAceMini<- combinaciones
+combinacionesAceMini$porcentaje<- 1/(1+(sqrt((5.75-combinacionesAceMini$Aceleración)^2+
+                                  (5.75-combinacionesAceMini$Miniturbo)^2+
+                                  (1.5-combinacionesAceMini$Velocidad.Tierra)^2+
+                                  (2-combinacionesAceMini$Velocidad.Agua)^2+
+                                  (3-combinacionesAceMini$Velocidad.Aire)^2+
+                                  (2-combinacionesAceMini$Velocidad.Antigravedad)^2)))*100
+orden<- order(-combinacionesAceMini$porcentaje)
+combinacionesAceMini<- combinacionesAceMini[orden,]
+combinacionesAceMini
+```
+
+
+## 4.2 Velocidad
+
+Para una combinación donde se priorizen esta estadística, se puede tomar en cuenta:
+
+- Aceleración: 1
+- Miniturbo: 1
+- Velocidad Tierra: 5.75
+- Velocidad Agua: 4.5
+- Velocidad Aire: 4.5
+- Velocidad Antigravedad: 5.25
+
+```{r echo=FALSE}
+combinacionesVeloci<- combinaciones
+combinacionesVeloci$porcentaje<- 1/(1+(sqrt((1-combinacionesVeloci$Aceleración)^2+
+                                  (1-combinacionesVeloci$Miniturbo)^2+
+                                  (5.75-combinacionesVeloci$Velocidad.Tierra)^2+
+                                  (4.5-combinacionesVeloci$Velocidad.Agua)^2+
+                                  (4.5-combinacionesVeloci$Velocidad.Aire)^2+
+                                  (5.25-combinacionesVeloci$Velocidad.Antigravedad)^2)))*100
+orden<- order(-combinacionesVeloci$porcentaje)
+combinacionesVeloci<- combinacionesVeloci[orden,]
+combinacionesVeloci
+```
+
+## 4.3 Neutro
+
+Para una combinación neutra, se puede tomar en cuenta:
+
+- Aceleración: 4.25
+- Miniturbo: 4.25
+- Velocidad Tierra: 4.25
+- Velocidad Agua: 4.25
+- Velocidad Aire: 4.25
+- Velocidad Antigravedad: 4.25
+
+```{r echo=FALSE}
+combinacionesNeutro<- combinaciones
+combinacionesNeutro$porcentaje<- 1/(1+(sqrt((4.25-combinacionesNeutro$Aceleración)^2+
+                                  (4.25-combinacionesNeutro$Miniturbo)^2+
+                                  (4.25-combinacionesNeutro$Velocidad.Tierra)^2+
+                                  (4.25-combinacionesNeutro$Velocidad.Agua)^2+
+                                  (4.25-combinacionesNeutro$Velocidad.Aire)^2+
+                                  (4.25-combinacionesNeutro$Velocidad.Antigravedad)^2)))*100
+orden<- order(-combinacionesNeutro$porcentaje)
+combinacionesNeutro<- combinacionesNeutro[orden,]
+combinacionesNeutro
+```
+
+# 5. Forma General
+
+Finalmente, se puede hacer una forma general, donde se puede elegir los parámetros que se 
+desean y el programa elige la combinación más cercana a esa opción. E incluso, se puede 
+agregar un multiplicador para elegir qué tanto efecto tendrá una estadística sobre la otra
+
+```{r echo=FALSE}
+objPeso<- 6
+objAceleracion<- 6
+objTraccionDentro<- 6
+objTraccionFuera<- 6
+objMiniturbo<- 6
+objVelocidadTierra<- 6
+objVelocidadAgua<- 6
+objVelocidadAntigravedad<- 6
+objVelocidadAire<- 6
+objManejoTierra<- 6
+objManejoAgua<- 6
+objManejoAntigravedad<- 6
+objManejoAire<- 6
+
+Objetivos<- c(objPeso, objAceleracion, objTraccionDentro, objTraccionFuera, objMiniturbo,
+              objVelocidadTierra, objVelocidadAgua, objManejoAntigravedad, objVelocidadAire,
+              objManejoTierra, objManejoAgua, objManejoAntigravedad, objManejoAire)
+
+multiPeso<- 0.5
+multiAceleracion<- 1
+multiTraccionDentro<- 0
+multiTraccionFuera<- 0.5
+multiMiniturbo<- 1
+multiVelocidadTierra<- 2
+multiVelocidadAgua<- 0
+multiVelocidadAntigravedad<- 1
+multiVelocidadAire<- 0
+multiManejoTierra<- 1
+multiManejoAgua<- 0
+multiManejoAntigravedad<- 0
+multiManejoAire<- 0
+
+Multiplicadores<- c(multiPeso, multiAceleracion, multiTraccionDentro, multiTraccionFuera,
+                    multiMiniturbo, multiVelocidadTierra, multiVelocidadAgua,
+                    multiVelocidadAntigravedad, multiVelocidadAire, multiManejoTierra,
+                    multiManejoAgua, multiManejoAntigravedad, multiManejoAire)
+
+condiciones<- data.frame(Objetivos, Multiplicadores)
+rownames(condiciones)<- c("Peso", "Aceleración", "Tracción Dentro", "Tracción Fuera",
+                         "Miniturbo", "Velocidad Tierra", "Velocidad Agua", 
+                         "Velocidad Antigravedad", "Velocidad Aire", "Manejo Tierra",
+                         "Manejo Agua", "Manejo Antigravedad", "Manejo Aire")
+condiciones
+```
+
+```{r echo=FALSE}
+combinacionesElegidas<- combinaciones
+combinacionesElegidas$porcentaje<- 1/(1+(sqrt((objPeso-combinacionesElegidas$Peso)^2*multiPeso+
+      (objAceleracion-combinacionesElegidas$Aceleración)^2*multiAceleracion+
+      (objTraccionDentro-combinacionesElegidas$Tracción.Pista)^2*multiTraccionDentro+
+      (objTraccionFuera-combinacionesElegidas$Tracción.Fuera)^2*multiTraccionFuera+
+      (objMiniturbo-combinacionesElegidas$Miniturbo)^2*multiMiniturbo+
+      (objVelocidadTierra-combinacionesElegidas$Velocidad.Tierra)^2*multiVelocidadTierra+
+      (objVelocidadAgua-combinacionesElegidas$Velocidad.Agua)^2*multiVelocidadAgua+
+      (objVelocidadAntigravedad-combinacionesElegidas$Velocidad.Antigravedad)^2*multiVelocidadAntigravedad+
+      (objVelocidadAire-combinacionesElegidas$Velocidad.Aire)^2*multiVelocidadAire+
+      (objManejoTierra-combinacionesElegidas$Manejo.Tierra)^2*multiManejoTierra+
+      (objManejoAgua-combinacionesElegidas$Manejo.Agua)^2*multiManejoAgua+
+      (objManejoAntigravedad-combinacionesElegidas$Manejo.Antigravedad)^2*multiManejoAntigravedad+
+      (objManejoAire-combinacionesElegidas$Manejo.Aire)^2*multiManejoAire)))*100
+orden<- order(-combinacionesElegidas$porcentaje)
+combinacionesElegidas<- combinacionesElegidas[orden,]
+combinacionesElegidas
+```
+
+
+
+
+

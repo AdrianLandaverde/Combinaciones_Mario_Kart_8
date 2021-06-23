@@ -1,0 +1,5 @@
+﻿Clase,Alas,Peso,Aceleración,Tracción pista,Tracción fuera,Mini Turbo,Velocidad Tierra,Velocidad Agua,Velocidad Antigravedad,Velocidad Aire,Manejo Tierra,Manejo Agua,Manejo Antigravedad,Manejo Aire
+Alas 1,Ala Flor;Ala Nubes;Ala Papel;Paracaídas,0,2,1,1,2,0,1,1,1,1,0,1,2
+Alas 2,Ala ardillenita;Ala Hyliana;Superala,1,1,1,1,1,1,1,0,2,1,0,1,1
+Alas 3,Ala Bowser;Parapente;Parapente MKTV;Parasol Peach,1,2,2,0,2,0,0,1,1,1,1,0,2
+Alas 4,Ala Wario;Dorada;Paravela;Planeador,2,1,2,0,1,1,0,1,2,1,1,0,1

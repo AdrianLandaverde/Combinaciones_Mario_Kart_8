@@ -1,0 +1,10 @@
+﻿Clase,Llantas,Peso,Aceleración,Tracción pista,Tracción fuera,Mini Turbo,Velocidad Tierra,Velocidad Agua,Velocidad Antigravedad,Velocidad Aire,Manejo Tierra,Manejo Agua,Manejo Antigravedad,Manejo Aire
+Llantas 1,Botón;Hojas,0,5,1,3,5,1,2,2,2,3,3,4,2
+Llantas 2,Pequeña;Pequeña cian,0,6,0,4,6,0,3,0,3,4,4,4,4
+Llantas 3,Acolchonada;Esponja,1,4,2,6,4,1,1,1,4,2,1,2,3
+Llantas 4,Clásica;Clásica roja;Madera,2,2,4,1,2,3,2,4,2,4,4,3,4
+Llantas 5,GLA;Normal;Normal azul,2,4,2,5,3,2,3,2,3,3,3,3,3
+Llantas 6,Lisa;Lisa morada,3,1,4,0,0,4,0,4,0,2,0,2,1
+Llantas 7,Rally;Rally blanca;Trifuerza,3,3,3,6,1,3,4,2,1,1,1,2,2
+Llantas 8,Dorada;Metálica,4,0,1,2,0,4,3,1,2,2,2,1,0
+Llantas 9,Ancestral;Todoterreno;Todoterreno cítrica,4,2,3,7,2,2,2,2,1,0,1,0,1

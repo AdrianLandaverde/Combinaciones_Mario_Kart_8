@@ -1,0 +1,17 @@
+﻿Clase,Personajes,Peso,Aceleración,Tracción pista,Tracción fuera,Mini Turbo,Velocidad Tierra,Velocidad Agua,Velocidad Antigravedad,Velocidad Aire,Manejo Tierra,Manejo Agua,Manejo Antigravedad,Manejo Aire
+Personajes 1,Bebé Daisy;Bebé Peach,0,4,3,5,5,0,0,0,0,10,10,10,10
+Personajes 2,Bebé Rosalina;Lemmy,0,5,4,3,5,0,0,0,0,9,9,9,9
+Personajes 3,Bebé Luigi;Bebé Mario;Huesitos,1,5,2,4,4,1,1,1,1,8,8,8,8
+Personajes 4,Bowser Jr;Koopa;Lakitu,2,4,1,5,4,2,2,2,2,8,8,8,8
+Personajes 5,Canela;Toadette;Wendy,2,5,4,2,4,2,2,2,2,7,7,7,7
+Personajes 6,Aldeana;Inkling Chica;Peach felina,3,4,2,3,3,4,4,4,4,6,6,6,6
+Personajes 7,Larry;Shy Guy;Toad,3,4,3,4,3,3,3,3,3,7,7,7,7
+Personajes 8,Daisy;Peach;Yoshi,4,3,3,3,3,5,5,5,5,5,5,5,5
+Personajes 9,Aldeano;Inkling Chico;Mario Tanuki,5,3,7,1,3,5,5,5,5,5,5,5,5
+Personajes 10,Ludwig;Mario,6,2,4,2,2,6,6,6,6,4,4,4,4
+Personajes 11,Iggy;Luigy,6,2,5,1,2,6,6,6,6,5,5,5,5
+Personajes 12,Link;Rey Bú;Rosalina,7,1,9,3,2,7,7,7,7,3,3,3,3
+Personajes 13,Donkey Kong;Roy,8,1,10,0,1,9,9,9,9,2,2,2,2
+Personajes 14,Bowsitos;Wario,9,0,5,1,0,10,10,10,10,1,1,1,1
+Personajes 15,Bowser;Morton,10,0,6,0,0,10,10,10,10,0,0,0,0
+Personajes 16,Mario de metal;Mario dorado;Peach de oro rosa,10,1,8,1,1,8,8,8,8,3,3,3,3

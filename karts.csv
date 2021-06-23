@@ -1,0 +1,15 @@
+﻿Clase,Karts,Peso,Aceleración,Tracción pista,Tracción fuera,Mini Turbo,Velocidad Tierra,Velocidad Agua,Velocidad Antigravedad,Velocidad Aire,Manejo Tierra,Manejo Agua,Manejo Antigravedad,Manejo Aire
+Karts 1,Cuatrimoto calamar;Halcón Azul,0,3,1,3,3,4,2,4,3,2,3,5,1
+Karts 2,Kartrópodo;Nave Bowser,0,6,0,6,6,1,5,0,2,4,5,2,3
+Karts 3,Catina GTI;Chiquimoto,0,7,1,4,7,0,1,2,1,5,4,5,4
+Karts 4,Halcón;Moto GP;Supercarroza,1,2,1,2,3,4,3,3,3,3,3,2,3
+Karts 5,Floruga;Llama Fugaz;Moto estándar;W 25 Flecha de plata,1,5,3,5,5,2,2,4,3,4,3,4,3
+Karts 6,Motoneta;Mototerreno;Turbiturbo,1,6,3,4,6,1,3,1,1,5,4,4,2
+Karts 7,Dorado;Moto Hyliana;Turbotenis,2,2,1,0,3,4,2,3,3,3,2,3,2
+Karts 8,300 SL Roadster;Kart Estándar;Megamoto,2,4,3,3,4,3,3,3,3,3,2,3,3
+Karts 9,Cuatripeluche;Felino;Torbellino;Yoshiciclo,2,5,4,3,5,2,2,3,4,4,2,3,4
+Karts 10,Bólido P;Rayo GTI;Relámpago 1,3,1,3,1,1,5,1,4,2,1,1,2,0
+Karts 11,Kart Tanuki;Koopayaso;Moto Hyliana Alfa,3,2,4,7,3,2,4,3,3,4,4,3,3
+Karts 12,Deportivo;Mach 8;Tornado,3,3,2,4,4,3,3,5,4,2,2,4,2
+Karts 13,Clásico;Cuatrimoto estándar;GLA,4,0,2,5,0,5,2,3,1,0,1,1,0
+Karts 14,Huesocicleta;Subacuato;Tribólido,4,1,1,3,2,4,5,2,0,1,5,1,1
