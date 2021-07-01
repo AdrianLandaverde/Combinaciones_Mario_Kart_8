@@ -73,21 +73,27 @@ sidebar <- dashboardSidebar(
 )
 
 body <- dashboardBody(
-  h1("Combinación Más Cercana a las estadísticas elegidas"),
+  tags$head(
+    tags$link(rel= "stylesheet", type= "text/css", href= "styles.css")
+  ),
   verbatimTextOutput("pruebas"),
   fluidRow(
-    column(width = 7,
-      h2("Personajes: "),
-      imageOutput("imagenPersonajes",width = "auto", height="auto"),
-      h2("Karts: "),
-      imageOutput("imagenKarts",width = "auto", height="auto"),
-      h2("LLantas: "),
-      imageOutput("imagenLlantas",width = "auto", height="auto"),
-      h2("Alas: "),
-      imageOutput("imagenAlas",width = "auto", height="auto")
-    ),
-    column(width = 5,
-      h2("Estadísticas: "),
+    box(title = ("Combinación Más Cercana a las estadísticas elegidas"), width = 6,
+        status = "primary", solidHeader = TRUE, collapsible = TRUE,
+      column(width = 12,
+             h2(textOutput("Personajes")),
+             imageOutput("imagenPersonajes",width = "auto", height="auto"),br(),
+             h2(textOutput("Karts")),
+             imageOutput("imagenKarts",width = "auto", height="auto"),br(),
+             h2(textOutput("Llantas")),
+             imageOutput("imagenLlantas",width = "auto", height="auto"),br(),
+             h2(textOutput("Alas")),
+             imageOutput("imagenAlas",width = "auto", height="auto")
+             )
+      ),
+    box(title="Estadísticas", status = "primary", solidHeader = TRUE, collapsible = TRUE,
+        width=6,
+    column(width = 12,
       infoBoxOutput("velocidadTierraBox"),
       infoBoxOutput("velocidadAguaBox"),
       infoBoxOutput("velocidadAntigravedadBox"),
@@ -103,18 +109,19 @@ body <- dashboardBody(
       infoBoxOutput("manejoAireBox"),
       infoBoxOutput("promedioBox"),
       infoBoxOutput("porcentajeBox")
-    )
+    ))
   ),
+  h2("Otras combinaciones"),
   dataTableOutput("tablaCombinaciones")
 )
 
-header<- dashboardHeader(title="Combinanciones Mario Kart 8", titleWidth = 300)
+header<- dashboardHeader(title="Combinaciones Mario Kart 8", titleWidth = 300)
 
 ui <- dashboardPage(header, 
                     sidebar, 
                     body)
 server <- function(input, output) {
-  combinaciones<- read.csv("combinaciones.csv")
+  combinaciones<- read.csv("www/combinaciones.csv")
   nombres<- c("PE","AC","TD","TF","MT","VT","VA","VG","VI","MT","MA","MG","MI")
   colnames(combinaciones)[9:21]<- nombres
   combinaciones[,9:21]<- combinaciones[,9:21]*.25+.75 
@@ -173,6 +180,8 @@ server <- function(input, output) {
   combinaciones$Porcentaje<-100 - (combinaciones$Porcentaje*100/distanciamax)
   
   orden<- order(-combinaciones$Porcentaje)
+  combinaciones$Porcentaje<- round(combinaciones$Porcentaje,3) 
+  combinaciones$Promedio<- round(combinaciones$Promedio,3) 
   combinaciones<- combinaciones[orden,]
   })
   
@@ -252,27 +261,27 @@ server <- function(input, output) {
       color = "olive",width = NULL)})
   
   output$imagenPersonajes <- renderImage({
-    filename <- paste0(combinacionesFinales()[1,1],".png")
+    filename <- paste0("www/",combinacionesFinales()[1,1],".png")
     list(src = filename,
-         alt = "Imagen de los personajes", width=NULL,height=NULL)
+         alt = "Imagen de los personajes", width="100%",height="100%")
   }, deleteFile = FALSE)
   
   output$imagenKarts <- renderImage({
-    filename <- paste0(combinacionesFinales()[1,3],".png")
+    filename <- paste0("www/",combinacionesFinales()[1,3],".png")
     list(src = filename,
-         alt = "Imagen de los karts", width=NULL,height=NULL)
+         alt = "Imagen de los karts", width="100%",height="100%")
   }, deleteFile = FALSE)
   
   output$imagenLlantas <- renderImage({
-    filename <- paste0(combinacionesFinales()[1,5],".png")
+    filename <- paste0("www/",combinacionesFinales()[1,5],".png")
     list(src = filename,
-         alt = "Imagen de las llantas", width=NULL,height=NULL)
+         alt = "Imagen de las llantas", width="100%",height="100%")
   }, deleteFile = FALSE)
   
   output$imagenAlas <- renderImage({
-    filename <- paste0(combinacionesFinales()[1,7],".png")
+    filename <- paste0("www/",combinacionesFinales()[1,7],".png")
     list(src = filename,
-         alt = "Imagen de las alas", width=NULL,height=NULL)
+         alt = "Imagen de las alas", width="100%",height="100%")
   }, deleteFile = FALSE)
   
   output$tablaCombinaciones<- renderDataTable({
@@ -284,6 +293,26 @@ server <- function(input, output) {
     combinaciones[,3]<-gsub(";",", ", combinaciones[,3])
     combinaciones[,4]<-gsub(";",", ", combinaciones[,4])
     combinaciones
+  })
+  
+  output$Personajes<- renderText({
+    personajes<- paste0("Personajes: ", gsub(";", ", ", combinacionesFinales()[1,2]))
+    personajes
+  })
+  
+  output$Karts<- renderText({
+    karts<- paste0("Karts: ", gsub(";", ", ", combinacionesFinales()[1,4]))
+    karts
+  })
+  
+  output$Llantas<- renderText({
+    llantas<- paste0("Llantas: ", gsub(";", ", ", combinacionesFinales()[1,6]))
+    llantas
+  })
+  
+  output$Alas<- renderText({
+    alas<- paste0("Alas: ", gsub(";", ", ", combinacionesFinales()[1,8]))
+    alas
   })
   
   
